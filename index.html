@@ -7,26 +7,43 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --primary: #6366f1;
+      --secondary: #8b5cf6;
+      --dark: #0f172a;
+      --light: #f8fafc;
+    }
 
     body {
       font-family: 'Space Grotesk', sans-serif;
       overflow-x: hidden;
+      background-color: var(--dark);
+      color: var(--light);
     }
 
     /* Gradient text for the whole logo */
     .title-gradient {
-      background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-container {
+      position: relative;
+      display: inline-block;
     }
 
     .logo-x {
       position: relative;
       display: inline-block;
-      margin: 0 0.25rem; /* tighter spacing around “X” */
+      margin: 0 0.25rem;
     }
     .logo-x::before,
     .logo-x::after {
@@ -35,47 +52,147 @@
       top: 0;
       width: 8px;
       height: 100%;
-      background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
       border-radius: 4px;
     }
     .logo-x::before {
       left: 50%;
       transform: translateX(-50%) rotate(45deg);
-      box-shadow: 0 0 15px #3b82f6;
+      box-shadow: 0 0 15px var(--primary);
     }
     .logo-x::after {
       left: 50%;
       transform: translateX(-50%) rotate(-45deg);
-      box-shadow: 0 0 15px #8b5cf6;
+      box-shadow: 0 0 15px var(--secondary);
     }
 
     .glow-text {
       text-shadow: 0 0 10px rgba(139, 92, 246, 0.7);
+      position: relative;
+    }
+
+    .glow-text::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s ease;
+    }
+
+    .glow-text:hover::after {
+      transform: scaleX(1);
     }
 
     .countdown-item {
       background: rgba(30, 41, 59, 0.7);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(99, 102, 241, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .countdown-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+    }
+
+    .countdown-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+      transform: translateX(-100%);
+    }
+
+    .countdown-item:hover::before {
+      animation: shine 1.5s infinite;
+    }
+
+    @keyframes shine {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    /* Modern notification section */
+    .notification-card {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .notification-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(99, 102, 241, 0.2);
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
     }
 
     .subscribe-input {
-      background: rgba(15, 23, 42, 0.7);
+      background: rgba(30, 41, 59, 0.7);
       border: 1px solid rgba(99, 102, 241, 0.5);
+      transition: all 0.3s ease;
+      padding-left: 50px;
     }
     .subscribe-input:focus {
       outline: none;
-      border-color: #8b5cf6;
+      border-color: var(--secondary);
       box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
     }
 
+    .subscribe-input:focus + .input-icon {
+      color: var(--secondary);
+      transform: translateY(-50%) scale(1.2);
+    }
+
     .subscribe-btn {
-      background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
       transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
     }
     .subscribe-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+    }
+
+    .subscribe-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, var(--secondary), var(--primary));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .subscribe-btn:hover::after {
+      opacity: 1;
     }
 
     /* Stars */
@@ -86,8 +203,9 @@
       animation: twinkle 2s infinite alternate;
     }
     @keyframes twinkle {
-      0% { opacity: 0.2; }
-      100% { opacity: 1; }
+      0% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+      100% { opacity: 0.2; transform: scale(1); }
     }
 
     /* X pulse animations */
@@ -97,15 +215,15 @@
     @keyframes x-pulse {
       0% {
         transform: translateX(-50%) rotate(45deg) scale(1);
-        box-shadow: 0 0 15px #3b82f6;
+        box-shadow: 0 0 15px var(--primary);
       }
       50% {
-        transform: translateX(-50%) rotate(45deg) scale(1.05);
-        box-shadow: 0 0 25px #3b82f6;
+        transform: translateX(-50%) rotate(45deg) scale(1.1);
+        box-shadow: 0 0 30px var(--primary);
       }
       100% {
         transform: translateX(-50%) rotate(45deg) scale(1);
-        box-shadow: 0 0 15px #3b82f6;
+        box-shadow: 0 0 15px var(--primary);
       }
     }
 
@@ -115,82 +233,185 @@
     @keyframes x-pulse-2 {
       0% {
         transform: translateX(-50%) rotate(-45deg) scale(1);
-        box-shadow: 0 0 15px #8b5cf6;
+        box-shadow: 0 0 15px var(--secondary);
       }
       50% {
-        transform: translateX(-50%) rotate(-45deg) scale(1.05);
-        box-shadow: 0 0 25px #8b5cf6;
+        transform: translateX(-50%) rotate(-45deg) scale(1.1);
+        box-shadow: 0 0 30px var(--secondary);
       }
       100% {
         transform: translateX(-50%) rotate(-45deg) scale(1);
-        box-shadow: 0 0 15px #8b5cf6;
+        box-shadow: 0 0 15px var(--secondary);
+      }
+    }
+
+    /* Particle effects */
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid rgba(99, 102, 241, 0.2);
+      background: rgba(2, 6, 23, 0.7);
+      backdrop-filter: blur(10px);
+    }
+
+    .footer-link {
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .footer-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--secondary);
+      transition: width 0.3s ease;
+    }
+
+    .footer-link:hover::after {
+      width: 100%;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .countdown-item {
+        padding: 0.75rem;
+      }
+      .countdown-item div:first-child {
+        font-size: 1.5rem;
+      }
+      
+      .notification-card {
+        padding: 1.5rem;
+      }
+      
+      .subscribe-input {
+        padding-left: 40px;
+      }
+      
+      .input-icon {
+        left: 15px;
       }
     }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col">
   <div id="vanta-bg" class="fixed top-0 left-0 w-full h-full -z-10"></div>
-  <!-- Moon removed -->
 
   <div class="container mx-auto px-4 py-12 flex-grow flex flex-col items-center justify-center">
     <div class="text-center mb-12">
-      <h1 class="text-5xl md:text-7xl font-bold mb-6 animate__animated animate__fadeIn title-gradient">
-        Direction<span class="logo-x"><span class="text-transparent">X</span></span>.ai
-      </h1>
+      <div class="logo-container mb-8">
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 animate__animated animate__fadeIn title-gradient">
+          Direction<span class="logo-x"><span class="text-transparent">X</span></span>.ai
+        </h1>
+      </div>
       <h2 class="text-2xl md:text-4xl font-medium mb-8 animate__animated animate__fadeIn animate__delay-1s glow-text">
         Charting Futures, One AI-Insight at a Time
       </h2>
       <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto animate__animated animate__fadeIn animate__delay-1s">
         DirectionX.ai is busy training its career-crafting algorithms.<br/>
-        Launching soon, your dream path awaits <span class="text-2xl">🚀</span>
+        Launching soon, your dream path awaits <span class="inline-block animate-bounce">🚀</span>
       </p>
     </div>
 
     <div class="w-full max-w-3xl mb-16 animate__animated animate__fadeIn animate__delay-2s">
       <div class="grid grid-cols-4 gap-4 text-center">
-        <div class="countdown-item rounded-lg p-4">
-          <div class="text-4xl font-bold" id="days">00</div>
-          <div class="text-sm text-slate-400">Days</div>
+        <div class="countdown-item rounded-lg p-6">
+          <div class="text-4xl md:text-5xl font-bold" id="days">00</div>
+          <div class="text-sm text-slate-400 mt-2">Days</div>
         </div>
-        <div class="countdown-item rounded-lg p-4">
-          <div class="text-4xl font-bold" id="hours">00</div>
-          <div class="text-sm text-slate-400">Hours</div>
+        <div class="countdown-item rounded-lg p-6">
+          <div class="text-4xl md:text-5xl font-bold" id="hours">00</div>
+          <div class="text-sm text-slate-400 mt-2">Hours</div>
         </div>
-        <div class="countdown-item rounded-lg p-4">
-          <div class="text-4xl font-bold" id="minutes">00</div>
-          <div class="text-sm text-slate-400">Minutes</div>
+        <div class="countdown-item rounded-lg p-6">
+          <div class="text-4xl md:text-5xl font-bold" id="minutes">00</div>
+          <div class="text-sm text-slate-400 mt-2">Minutes</div>
         </div>
-        <div class="countdown-item rounded-lg p-4">
-          <div class="text-4xl font-bold" id="seconds">00</div>
-          <div class="text-sm text-slate-400">Seconds</div>
+        <div class="countdown-item rounded-lg p-6">
+          <div class="text-4xl md:text-5xl font-bold" id="seconds">00</div>
+          <div class="text-sm text-slate-400 mt-2">Seconds</div>
         </div>
       </div>
     </div>
 
-    <div class="w-full max-w-md animate__animated animate__fadeIn animate__delay-3s">
-      <div class="text-center mb-4 text-slate-300">
-        Get notified when we launch
+    <!-- Modern Notification Section -->
+    <div class="w-full max-w-2xl animate__animated animate__fadeIn animate__delay-3s">
+      <div class="notification-card rounded-xl p-8 mb-6">
+        <div class="text-center mb-6">
+          <div class="flex justify-center mb-4">
+            <div class="bg-indigo-900/50 p-3 rounded-full">
+              <i class="fas fa-envelope-open-text text-2xl text-indigo-400"></i>
+            </div>
+          </div>
+          <h3 class="text-xl md:text-2xl font-semibold mb-2">Get Early Access</h3>
+          <p class="text-slate-300">Be the first to know when we launch. Join our exclusive waitlist now.</p>
+        </div>
+        
+        <form class="flex flex-col gap-4">
+          <div class="input-wrapper">
+            <i class="fas fa-envelope input-icon"></i>
+            <input
+              type="email"
+              placeholder="Enter your email address"
+              class="subscribe-input w-full px-5 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 text-white placeholder-slate-400"
+              required
+            />
+          </div>
+          <button type="submit" class="subscribe-btn px-8 py-3 rounded-lg font-medium text-white flex items-center justify-center gap-2">
+            <i class="fas fa-paper-plane"></i> Subscribe Now
+          </button>
+        </form>
       </div>
-      <form class="flex flex-col sm:flex-row gap-2">
-        <input
-          type="email"
-          placeholder="Your email address"
-          class="subscribe-input flex-grow px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500"
-          required
-        />
-        <button type="submit" class="subscribe-btn px-6 py-3 rounded-lg font-medium">
-          Subscribe
-        </button>
-      </form>
+      
+      <div class="text-center text-slate-500 text-sm">
+        <p>We respect your privacy. Unsubscribe at any time.</p>
+      </div>
     </div>
   </div>
 
-  <footer class="py-6 text-center text-slate-400 text-sm">
-    &copy; 2025 DirectionX.ai. All rights reserved.
+  <!-- Enhanced Footer -->
+  <footer class="py-8">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <p class="text-slate-400">&copy; <span id="year"></span> DirectionX.ai. All rights reserved.</p>
+        </div>
+        
+        <div class="flex flex-col md:flex-row items-center gap-6">
+          <a href="#" class="footer-link text-slate-400 hover:text-white">Privacy Policy</a>
+          <a href="#" class="footer-link text-slate-400 hover:text-white">Terms of Service</a>
+          <a href="#" class="footer-link text-slate-400 hover:text-white">Contact Us</a>
+          
+          <div class="flex gap-4 mt-4 md:mt-0">
+            <a href="#" class="text-slate-400 hover:text-white transition-colors">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-slate-400 hover:text-white transition-colors">
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="#" class="text-slate-400 hover:text-white transition-colors">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </footer>
 
   <script>
-    // Vanta.js background
+    // Set current year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Enhanced Vanta.js background
     VANTA.NET({
       el: "#vanta-bg",
       mouseControls: true,
@@ -200,34 +421,64 @@
       minWidth: 200.00,
       scale: 1.00,
       scaleMobile: 1.00,
-      color: 0x5b21b6,
+      color: 0x6366f1,
       backgroundColor: 0x020617,
-      points: 12.00,
-      maxDistance: 22.00,
-      spacing: 16.00
+      points: 15.00,
+      maxDistance: 25.00,
+      spacing: 18.00
     });
 
     // Create stars
     function createStars() {
-      const count = 100;
+      const count = 150;
       const container = document.body;
       for (let i = 0; i < count; i++) {
         const star = document.createElement('div');
         star.classList.add('star');
-        const size = Math.random() * 2 + 1;
+        const size = Math.random() * 3 + 1;
         star.style.width = `${size}px`;
         star.style.height = `${size}px`;
         star.style.left = `${Math.random() * 100}%`;
         star.style.top = `${Math.random() * 100}%`;
         star.style.animationDelay = `${Math.random() * 2}s`;
+        star.style.animationDuration = `${Math.random() * 2 + 1}s`;
         container.appendChild(star);
       }
     }
 
-    // Countdown timer
+    // Create floating particles
+    function createParticles() {
+      const count = 30;
+      const container = document.querySelector('.logo-container');
+      if (!container) return;
+      
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        const size = Math.random() * 4 + 1;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        particle.style.opacity = Math.random() * 0.5 + 0.1;
+        particle.style.animation = `float ${Math.random() * 10 + 5}s linear infinite`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(particle);
+      }
+    }
+
+    // Enhanced countdown timer with GSAP animations
     function updateCountdown() {
       const countDownDate = new Date();
       countDownDate.setMonth(countDownDate.getMonth() + 1.5);
+      
+      const elements = {
+        days: document.getElementById("days"),
+        hours: document.getElementById("hours"),
+        minutes: document.getElementById("minutes"),
+        seconds: document.getElementById("seconds")
+      };
+      
       const x = setInterval(function() {
         const now = new Date().getTime();
         const distance = countDownDate - now;
@@ -235,37 +486,162 @@
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        document.getElementById("days").innerHTML = days.toString().padStart(2, '0');
-        document.getElementById("hours").innerHTML = hours.toString().padStart(2, '0');
-        document.getElementById("minutes").innerHTML = minutes.toString().padStart(2, '0');
-        document.getElementById("seconds").innerHTML = seconds.toString().padStart(2, '0');
+        
+        // Animate each counter change with GSAP
+        if (elements.days.textContent !== days.toString().padStart(2, '0')) {
+          gsap.fromTo(elements.days, 
+            { y: -10, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 0.5, ease: "back.out" }
+          );
+          elements.days.textContent = days.toString().padStart(2, '0');
+        }
+        
+        if (elements.hours.textContent !== hours.toString().padStart(2, '0')) {
+          gsap.fromTo(elements.hours, 
+            { y: -10, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 0.5, ease: "back.out" }
+          );
+          elements.hours.textContent = hours.toString().padStart(2, '0');
+        }
+        
+        if (elements.minutes.textContent !== minutes.toString().padStart(2, '0')) {
+          gsap.fromTo(elements.minutes, 
+            { y: -10, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 0.5, ease: "back.out" }
+          );
+          elements.minutes.textContent = minutes.toString().padStart(2, '0');
+        }
+        
+        // Always animate seconds
+        gsap.fromTo(elements.seconds, 
+          { y: -5, opacity: 0.5 }, 
+          { y: 0, opacity: 1, duration: 0.5, ease: "back.out" }
+        );
+        elements.seconds.textContent = seconds.toString().padStart(2, '0');
+        
         if (distance < 0) {
           clearInterval(x);
-          ["days","hours","minutes","seconds"].forEach(id => {
-            document.getElementById(id).innerHTML = "00";
+          Object.keys(elements).forEach(id => {
+            elements[id].textContent = "00";
           });
         }
       }, 1000);
     }
 
-    // X pulsing (using the CSS animations)
+    // X pulsing animation with GSAP
     function animateX() {
-      document.querySelector('.logo-x::before')?.classList.add('x-animation');
-      document.querySelector('.logo-x::after')?.classList.add('x-animation-2');
+      const xBefore = document.querySelector('.logo-x::before');
+      const xAfter = document.querySelector('.logo-x::after');
+      
+      if (xBefore && xAfter) {
+        gsap.to(xBefore, {
+          duration: 3,
+          scale: 1.1,
+          boxShadow: "0 0 30px #6366f1",
+          yoyo: true,
+          repeat: -1,
+          ease: "sine.inOut"
+        });
+        
+        gsap.to(xAfter, {
+          duration: 3,
+          scale: 1.1,
+          boxShadow: "0 0 30px #8b5cf6",
+          yoyo: true,
+          repeat: -1,
+          ease: "sine.inOut",
+          delay: 0.5
+        });
+      }
     }
 
     // Initialize everything
     document.addEventListener('DOMContentLoaded', function() {
       createStars();
+      createParticles();
       updateCountdown();
       animateX();
+      
+      // Enhanced form submission
       const form = document.querySelector('form');
       if (form) {
         form.addEventListener('submit', function(e) {
           e.preventDefault();
           const email = form.querySelector('input[type="email"]').value;
-          alert(`Thanks for subscribing with ${email}! We'll notify you when we launch.`);
+          
+          // Create a success message element
+          const successMsg = document.createElement('div');
+          successMsg.className = 'mt-4 p-4 bg-green-900/50 text-green-300 rounded-lg animate__animated animate__fadeIn flex items-center gap-3';
+          successMsg.innerHTML = `
+            <i class="fas fa-check-circle text-xl"></i>
+            <span>Thanks for subscribing with ${email}! We'll notify you when we launch.</span>
+          `;
+          
+          // Remove any existing messages
+          const existingMsg = form.nextElementSibling;
+          if (existingMsg && existingMsg.className.includes('mt-4')) {
+            existingMsg.remove();
+          }
+          
+          // Add the new message
+          form.parentNode.insertBefore(successMsg, form.nextSibling);
+          
+          // Animate the message
+          gsap.from(successMsg, {
+            y: 20,
+            opacity: 0,
+            duration: 0.5
+          });
+          
           form.reset();
+          
+          // Remove message after 5 seconds
+          setTimeout(() => {
+            gsap.to(successMsg, {
+              y: -20,
+              opacity: 0,
+              duration: 0.5,
+              onComplete: () => successMsg.remove()
+            });
+          }, 5000);
+        });
+      }
+      
+      // Add hover effect to countdown items
+      const countdownItems = document.querySelectorAll('.countdown-item');
+      countdownItems.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+          gsap.to(item, {
+            scale: 1.05,
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
+        item.addEventListener('mouseleave', () => {
+          gsap.to(item, {
+            scale: 1,
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
+      });
+      
+      // Add hover effect to notification card
+      const notificationCard = document.querySelector('.notification-card');
+      if (notificationCard) {
+        notificationCard.addEventListener('mouseenter', () => {
+          gsap.to(notificationCard, {
+            y: -5,
+            duration: 0.4,
+            ease: "power2.out"
+          });
+        });
+        notificationCard.addEventListener('mouseleave', () => {
+          gsap.to(notificationCard, {
+            y: 0,
+            duration: 0.4,
+            ease: "power2.out"
+          });
         });
       }
     });
