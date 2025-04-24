@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DirectionX.ai - Coming Soon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Gradient text for the whole logo */
+    .title-gradient {
+      background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-x {
+      position: relative;
+      display: inline-block;
+      margin: 0 0.25rem; /* tighter spacing around “X” */
+    }
+    .logo-x::before,
+    .logo-x::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 8px;
+      height: 100%;
+      background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+      border-radius: 4px;
+    }
+    .logo-x::before {
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      box-shadow: 0 0 15px #3b82f6;
+    }
+    .logo-x::after {
+      left: 50%;
+      transform: translateX(-50%) rotate(-45deg);
+      box-shadow: 0 0 15px #8b5cf6;
+    }
+
+    .glow-text {
+      text-shadow: 0 0 10px rgba(139, 92, 246, 0.7);
+    }
+
+    .countdown-item {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .subscribe-input {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(99, 102, 241, 0.5);
+    }
+    .subscribe-input:focus {
+      outline: none;
+      border-color: #8b5cf6;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+    }
+
+    .subscribe-btn {
+      background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+      transition: all 0.3s ease;
+    }
+    .subscribe-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+    }
+
+    /* Stars */
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite alternate;
+    }
+    @keyframes twinkle {
+      0% { opacity: 0.2; }
+      100% { opacity: 1; }
+    }
+
+    /* X pulse animations */
+    .x-animation {
+      animation: x-pulse 3s infinite alternate;
+    }
+    @keyframes x-pulse {
+      0% {
+        transform: translateX(-50%) rotate(45deg) scale(1);
+        box-shadow: 0 0 15px #3b82f6;
+      }
+      50% {
+        transform: translateX(-50%) rotate(45deg) scale(1.05);
+        box-shadow: 0 0 25px #3b82f6;
+      }
+      100% {
+        transform: translateX(-50%) rotate(45deg) scale(1);
+        box-shadow: 0 0 15px #3b82f6;
+      }
+    }
+
+    .x-animation-2 {
+      animation: x-pulse-2 3s infinite alternate;
+    }
+    @keyframes x-pulse-2 {
+      0% {
+        transform: translateX(-50%) rotate(-45deg) scale(1);
+        box-shadow: 0 0 15px #8b5cf6;
+      }
+      50% {
+        transform: translateX(-50%) rotate(-45deg) scale(1.05);
+        box-shadow: 0 0 25px #8b5cf6;
+      }
+      100% {
+        transform: translateX(-50%) rotate(-45deg) scale(1);
+        box-shadow: 0 0 15px #8b5cf6;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+  <div id="vanta-bg" class="fixed top-0 left-0 w-full h-full -z-10"></div>
+  <!-- Moon removed -->
+
+  <div class="container mx-auto px-4 py-12 flex-grow flex flex-col items-center justify-center">
+    <div class="text-center mb-12">
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 animate__animated animate__fadeIn title-gradient">
+        Direction<span class="logo-x"><span class="text-transparent">X</span></span>.ai
+      </h1>
+      <h2 class="text-2xl md:text-4xl font-medium mb-8 animate__animated animate__fadeIn animate__delay-1s glow-text">
+        Charting Futures, One AI-Insight at a Time
+      </h2>
+      <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto animate__animated animate__fadeIn animate__delay-1s">
+        DirectionX.ai is busy training its career-crafting algorithms.<br/>
+        Launching soon, your dream path awaits <span class="text-2xl">🚀</span>
+      </p>
+    </div>
+
+    <div class="w-full max-w-3xl mb-16 animate__animated animate__fadeIn animate__delay-2s">
+      <div class="grid grid-cols-4 gap-4 text-center">
+        <div class="countdown-item rounded-lg p-4">
+          <div class="text-4xl font-bold" id="days">00</div>
+          <div class="text-sm text-slate-400">Days</div>
+        </div>
+        <div class="countdown-item rounded-lg p-4">
+          <div class="text-4xl font-bold" id="hours">00</div>
+          <div class="text-sm text-slate-400">Hours</div>
+        </div>
+        <div class="countdown-item rounded-lg p-4">
+          <div class="text-4xl font-bold" id="minutes">00</div>
+          <div class="text-sm text-slate-400">Minutes</div>
+        </div>
+        <div class="countdown-item rounded-lg p-4">
+          <div class="text-4xl font-bold" id="seconds">00</div>
+          <div class="text-sm text-slate-400">Seconds</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-full max-w-md animate__animated animate__fadeIn animate__delay-3s">
+      <div class="text-center mb-4 text-slate-300">
+        Get notified when we launch
+      </div>
+      <form class="flex flex-col sm:flex-row gap-2">
+        <input
+          type="email"
+          placeholder="Your email address"
+          class="subscribe-input flex-grow px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500"
+          required
+        />
+        <button type="submit" class="subscribe-btn px-6 py-3 rounded-lg font-medium">
+          Subscribe
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="py-6 text-center text-slate-400 text-sm">
+    &copy; 2023 DirectionX.ai. All rights reserved.
+  </footer>
+
+  <script>
+    // Vanta.js background
+    VANTA.NET({
+      el: "#vanta-bg",
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0x5b21b6,
+      backgroundColor: 0x020617,
+      points: 12.00,
+      maxDistance: 22.00,
+      spacing: 16.00
+    });
+
+    // Create stars
+    function createStars() {
+      const count = 100;
+      const container = document.body;
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        const size = Math.random() * 2 + 1;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.animationDelay = `${Math.random() * 2}s`;
+        container.appendChild(star);
+      }
+    }
+
+    // Countdown timer
+    function updateCountdown() {
+      const countDownDate = new Date();
+      countDownDate.setMonth(countDownDate.getMonth() + 1.5);
+      const x = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = countDownDate - now;
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        document.getElementById("days").innerHTML = days.toString().padStart(2, '0');
+        document.getElementById("hours").innerHTML = hours.toString().padStart(2, '0');
+        document.getElementById("minutes").innerHTML = minutes.toString().padStart(2, '0');
+        document.getElementById("seconds").innerHTML = seconds.toString().padStart(2, '0');
+        if (distance < 0) {
+          clearInterval(x);
+          ["days","hours","minutes","seconds"].forEach(id => {
+            document.getElementById(id).innerHTML = "00";
+          });
+        }
+      }, 1000);
+    }
+
+    // X pulsing (using the CSS animations)
+    function animateX() {
+      document.querySelector('.logo-x::before')?.classList.add('x-animation');
+      document.querySelector('.logo-x::after')?.classList.add('x-animation-2');
+    }
+
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', function() {
+      createStars();
+      updateCountdown();
+      animateX();
+      const form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const email = form.querySelector('input[type="email"]').value;
+          alert(`Thanks for subscribing with ${email}! We'll notify you when we launch.`);
+          form.reset();
+        });
+      }
+    });
+  </script>
+</body>
+</html>
